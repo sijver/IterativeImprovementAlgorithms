@@ -23,34 +23,39 @@ public class ProblemInstance {
         instanceSize = matrixOfDistances.length;
     }
 
-    public ProblemSolution generateInitialSolution(){
+    public ProblemSolution generateInitialSolution() {
         List<Integer> initialWay = new ArrayList<Integer>(instanceSize);
-        for(int i = 0; i < instanceSize; i++){
+        for (int i = 0; i < instanceSize; i++) {
             initialWay.add(i);
         }
         Collections.shuffle(initialWay, RandomManager.getRandom());
 
-        return createSolution(initialWay);
+        int[] initialWayArray = new int[instanceSize];
+        for (int i = 0; i < instanceSize; i++) {
+            initialWayArray[i] = initialWay.get(i);
+        }
+
+        return createSolution(initialWayArray);
     }
 
-    public ProblemSolution createSolution(List<Integer> way) {
-        ProblemSolution newSolution = new ProblemSolution(way);
+    public ProblemSolution createSolution(int[] way) {
+        ProblemSolution newSolution = new ProblemSolution(way.clone());
 
         int wayCostWithoutPenalties = 0;
         int penaltiesNumber = 0;
 
         for (int i = 0; i < instanceSize - 1; i++) {
-            wayCostWithoutPenalties += matrixOfDistances[way.get(i)][way.get(i + 1)];
-            if (wayCostWithoutPenalties < windowOpenTime[i + 1]) {
-                wayCostWithoutPenalties = windowOpenTime[i + 1];
-            } else if (wayCostWithoutPenalties > windowCloseTime[i + 1]) {
+            wayCostWithoutPenalties += matrixOfDistances[way[i]][way[i + 1]];
+            if (wayCostWithoutPenalties < windowOpenTime[way[i + 1]]) {
+                wayCostWithoutPenalties = windowOpenTime[way[i + 1]];
+            } else if (wayCostWithoutPenalties > windowCloseTime[way[i + 1]]) {
                 penaltiesNumber++;
             }
         }
-        wayCostWithoutPenalties += matrixOfDistances[way.get(instanceSize - 1)][way.get(0)];
-        if (wayCostWithoutPenalties < windowOpenTime[0]) {
-            wayCostWithoutPenalties = windowOpenTime[0];
-        } else if (wayCostWithoutPenalties > windowCloseTime[0]) {
+        wayCostWithoutPenalties += matrixOfDistances[way[instanceSize - 1]][way[0]];
+        if (wayCostWithoutPenalties < windowOpenTime[way[0]]) {
+            wayCostWithoutPenalties = windowOpenTime[way[0]];
+        } else if (wayCostWithoutPenalties > windowCloseTime[way[0]]) {
             penaltiesNumber++;
         }
 
@@ -61,21 +66,21 @@ public class ProblemInstance {
     }
 
     public ProblemSolution improveSolutionOnce(ProblemSolution initialSolution, Neighbourhood neighbourhood, PivotingRule pivotingRule) {
-        ProblemSolution bestSolution = initialSolution;
+        ProblemSolution bestSolution = createSolution(initialSolution.getWay());
 
         switch (neighbourhood) {
             case TRANSPOSE:
                 for (int i = 0; i < instanceSize - 1; i++) {
-                    List<Integer> newSolutionWay = initialSolution.getWay().subList(0, instanceSize);
-                    int var = newSolutionWay.get(i);
-                    newSolutionWay.set(i, newSolutionWay.get(i + 1));
-                    newSolutionWay.set(i + 1, var);
+                    int[] newSolutionWay = initialSolution.getWay().clone();
+                    int var = newSolutionWay[i];
+                    newSolutionWay[i] = newSolutionWay[i + 1];
+                    newSolutionWay[i + 1] = var;
 
                     ProblemSolution newSolution = createSolution(newSolutionWay);
                     if (newSolution.getWayCostWithPenalties() < bestSolution.getWayCostWithPenalties()) {
                         bestSolution = newSolution;
                         if (pivotingRule == PivotingRule.FIRST_IMPROVEMENT) {
-                            break;
+                            return bestSolution;
                         }
                     }
                 }
@@ -83,16 +88,16 @@ public class ProblemInstance {
             case EXCHANGE:
                 for (int i = 0; i < instanceSize; i++) {
                     for (int j = i + 1; j < instanceSize; j++) {
-                        List<Integer> newSolutionWay = initialSolution.getWay().subList(0, instanceSize);
-                        int var = newSolutionWay.get(i);
-                        newSolutionWay.set(i, newSolutionWay.get(j));
-                        newSolutionWay.set(j, var);
+                        int[] newSolutionWay = initialSolution.getWay().clone();
+                        int var = newSolutionWay[i];
+                        newSolutionWay[i] = newSolutionWay[j];
+                        newSolutionWay[j] = var;
 
                         ProblemSolution newSolution = createSolution(newSolutionWay);
                         if (newSolution.getWayCostWithPenalties() < bestSolution.getWayCostWithPenalties()) {
                             bestSolution = newSolution;
                             if (pivotingRule == PivotingRule.FIRST_IMPROVEMENT) {
-                                break;
+                                return bestSolution;
                             }
                         }
                     }
@@ -102,25 +107,25 @@ public class ProblemInstance {
                 for (int i = 0; i < instanceSize; i++) {
                     for (int j = 0; j < instanceSize; j++) {
                         if (i != j && i != j + 1) {
-                            List<Integer> newSolutionWay = initialSolution.getWay().subList(0, instanceSize);
-                            int var = newSolutionWay.get(i);
+                            int[] newSolutionWay = initialSolution.getWay().clone();
+                            int var = newSolutionWay[i];
                             if (i < j) {
                                 for (int k = i; k < j; k++) {
-                                    newSolutionWay.set(k, newSolutionWay.get(k + 1));
+                                    newSolutionWay[k] = newSolutionWay[k + 1];
                                 }
-                                newSolutionWay.set(j, var);
+                                newSolutionWay[j] = var;
                             } else {
                                 for (int k = i; k > j + 1; k--) {
-                                    newSolutionWay.set(k, newSolutionWay.get(k - 1));
+                                    newSolutionWay[k] = newSolutionWay[k - 1];
                                 }
-                                newSolutionWay.set(j + 1, var);
+                                newSolutionWay[j + 1] = var;
                             }
 
                             ProblemSolution newSolution = createSolution(newSolutionWay);
                             if (newSolution.getWayCostWithPenalties() < bestSolution.getWayCostWithPenalties()) {
                                 bestSolution = newSolution;
                                 if (pivotingRule == PivotingRule.FIRST_IMPROVEMENT) {
-                                    break;
+                                    return bestSolution;
                                 }
                             }
                         }

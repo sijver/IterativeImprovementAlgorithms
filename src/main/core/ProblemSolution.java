@@ -1,14 +1,13 @@
 package main.core;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  */
 public class ProblemSolution {
 
-    private List<Integer> way;
+    private int[] way;
 
     private int numberOfPenalties;
 
@@ -16,7 +15,7 @@ public class ProblemSolution {
 
     private int wayCostWithoutPenalties;
 
-    public ProblemSolution(List<Integer> way) {
+    public ProblemSolution(int[] way) {
         this.way = way;
     }
 
@@ -28,7 +27,7 @@ public class ProblemSolution {
         return wayCostWithoutPenalties + numberOfPenalties * PENALTY_COST;
     }
 
-    public List<Integer> getWay() {
+    public int[] getWay() {
         return way;
     }
 
@@ -45,12 +44,12 @@ public class ProblemSolution {
     }
 
 
-    public double getPenalisedRPD(int bestSolutionCost){
+    public double getPenalisedRPD(int bestSolutionCost) {
         return (double) (getWayCostWithPenalties() - bestSolutionCost) / bestSolutionCost * 100;
     }
 
     @Override
     public String toString() {
-        return "Way: " + Arrays.toString(way.toArray());
+        return "Way: " + Arrays.toString(way);
     }
 }
