@@ -1,5 +1,6 @@
 package main.core;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,5 +38,14 @@ public class ProblemSolution {
 
     public void setWayCostWithoutPenalties(int wayCostWithoutPenalties) {
         this.wayCostWithoutPenalties = wayCostWithoutPenalties;
+    }
+
+    public int getNumberOfPenalties() {
+        return numberOfPenalties;
+    }
+
+    @Override
+    public String toString() {
+        return "Way: " + Arrays.toString(way.toArray());
     }
 }
