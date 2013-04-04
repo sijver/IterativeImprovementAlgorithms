@@ -6,7 +6,7 @@ import java.lang.management.ThreadMXBean;
 /**
  * Created with IntelliJ IDEA.
  */
-public class TCPUCounter {
+public class CPUTimeCounter {
 
     private static ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
     private static long counterStartTime;
