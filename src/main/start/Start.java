@@ -89,13 +89,13 @@ public class Start {
         /*
         Running of II algorithm 100 times for each instance. Getting of average pRPD and CPU-time.
          */
-        for (String instanceFile : instanceFiles) {
-            problemInstance = Reader.readProblemInstanceFromFile(instanceFile);
+        for (int i = 0; i < instanceFiles.length; i++) {
+            problemInstance = Reader.readProblemInstanceFromFile(instanceFiles[i]);
             totalCPUTime = 0;
             totalPenalisedRPD = 0;
             infeasibleNum = 0;
-            for (int i = 0; i < randomSeeds.size(); i++) {
-                RandomManager.setRandomSeed(randomSeeds.get(i));
+            for (int j = 0; j < randomSeeds.size(); j++) {
+                RandomManager.setRandomSeed(randomSeeds.get(j));
                 problemSolution = problemInstance.generateInitialSolution();
                 CPUTimeCounter.startCounter();
                 if (algorithm.equals("single")) {
@@ -108,10 +108,10 @@ public class Start {
                 /*
                 Count CPU-time and pRPD.
                  */
-                allCpuTime[i] = CPUTimeCounter.getCounterResult();
-                totalCPUTime += allCpuTime[i];
-                allPenalisedRPD[i] = problemSolution.getPenalisedRPD(instanceBest[i]);
-                totalPenalisedRPD += allPenalisedRPD[i];
+                allCpuTime[j] = CPUTimeCounter.getCounterResult();
+                totalCPUTime += allCpuTime[j];
+                allPenalisedRPD[j] = problemSolution.getPenalisedRPD(instanceBest[i]);
+                totalPenalisedRPD += allPenalisedRPD[j];
                 /*
                 Count infeasible solutions.
                  */
@@ -129,12 +129,12 @@ public class Start {
             /*
             Statistical output
              */
-            System.out.println("Instance: " + instanceFile);
+            System.out.println("Instance: " + instanceFiles[i]);
             System.out.println("   Infeasible: " + (double) infeasibleNum / 100);
             System.out.println("   Mean penalised RPD: " + totalPenalisedRPD / 100);
             System.out.println("   Mean CPU time: " + totalCPUTime / 100);
-            System.out.println("      All penalised RPDs: " + Arrays.toString(allPenalisedRPD));
-            System.out.println("      All cpu-time: " + Arrays.toString(allCpuTime));
+//            System.out.println("      All penalised RPDs: " + Arrays.toString(allPenalisedRPD));
+//            System.out.println("      All cpu-time: " + Arrays.toString(allCpuTime));
         }
     }
 
