@@ -1,5 +1,7 @@
 package main.start;
 
+import main.core.Neighbourhood;
+import main.core.PivotingRule;
 import main.core.ProblemInstance;
 import main.core.ProblemSolution;
 import main.utils.CPUTimeCounter;
@@ -19,7 +21,43 @@ public class Start {
         /*
         Parsing of console command.
          */
-        String algorithm = "simple";
+        String algorithm = "single";
+        Neighbourhood neighbourhood = null;
+        List<Neighbourhood> neighbourhoodsOrder = new ArrayList<Neighbourhood>();
+        PivotingRule pivotingRule = null;
+        if (args.length != 2) {
+            errorExit();
+        } else {
+            if (args[0].equals("--best")) {
+                pivotingRule = PivotingRule.BEST_IMPROVEMENT;
+            } else if (args[0].equals("--first")) {
+                pivotingRule = PivotingRule.FIRST_IMPROVEMENT;
+            } else {
+                errorExit();
+            }
+            if (args[1].equals("--transpose")) {
+                neighbourhood = Neighbourhood.TRANSPOSE;
+            } else if (args[1].equals("--insert")) {
+                neighbourhood = Neighbourhood.INSERT;
+            } else if (args[1].equals("--exchange")) {
+                neighbourhood = Neighbourhood.EXCHANGE;
+            } else if (args[1].equalsIgnoreCase("--VND-TEI")) {
+                neighbourhoodsOrder = Arrays.asList(Neighbourhood.TRANSPOSE, Neighbourhood.EXCHANGE, Neighbourhood.INSERT);
+                algorithm = "VND";
+            } else if (args[1].equalsIgnoreCase("--VND-TIE")) {
+                neighbourhoodsOrder = Arrays.asList(Neighbourhood.TRANSPOSE, Neighbourhood.INSERT, Neighbourhood.EXCHANGE);
+                algorithm = "VND";
+            } else if (args[1].equalsIgnoreCase("--pipedVND-TEI")) {
+                neighbourhoodsOrder = Arrays.asList(Neighbourhood.TRANSPOSE, Neighbourhood.EXCHANGE, Neighbourhood.INSERT);
+                algorithm = "PipedVND";
+            } else if (args[1].equalsIgnoreCase("--pipedVND-TIE")) {
+                neighbourhoodsOrder = Arrays.asList(Neighbourhood.TRANSPOSE, Neighbourhood.INSERT, Neighbourhood.EXCHANGE);
+                algorithm = "PipedVND";
+            } else {
+                errorExit();
+            }
+        }
+
 
 
         /*
@@ -60,7 +98,7 @@ public class Start {
                 RandomManager.setRandomSeed(randomSeeds.get(i));
                 problemSolution = problemInstance.generateInitialSolution();
                 CPUTimeCounter.startCounter();
-                if (algorithm.equals("simple")) {
+                if (algorithm.equals("single")) {
                     problemSolution = problemInstance.improveSolutionToOptimum(problemSolution, neighbourhood, pivotingRule);
                 } else if (algorithm.equals("VND")) {
                     problemSolution = problemInstance.improveSolutionVND(problemSolution, neighbourhoodsOrder);
@@ -77,7 +115,7 @@ public class Start {
                 /*
                 Count infeasible solutions.
                  */
-                if(problemSolution.getNumberOfPenalties() > 0){
+                if (problemSolution.getNumberOfPenalties() > 0) {
                     infeasibleNum++;
                 }
 
@@ -100,8 +138,9 @@ public class Start {
         }
     }
 
-    public static void errorExit(){
-
+    public static void errorExit() {
+        System.out.println("Console command is wrong!");
+        System.exit(1);
     }
 
 }
