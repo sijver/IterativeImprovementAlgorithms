@@ -44,6 +44,11 @@ public class ProblemSolution {
         return numberOfPenalties;
     }
 
+
+    public double getPenalisedRPD(int bestSolutionCost){
+        return (double) (getWayCostWithPenalties() - bestSolutionCost) / bestSolutionCost * 100;
+    }
+
     @Override
     public String toString() {
         return "Way: " + Arrays.toString(way.toArray());
