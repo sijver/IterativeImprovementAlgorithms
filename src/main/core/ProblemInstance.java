@@ -1,5 +1,9 @@
 package main.core;
 
+import main.utils.RandomManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,6 +21,16 @@ public class ProblemInstance {
         this.windowOpenTime = windowOpenTime;
         this.windowCloseTime = windowCloseTime;
         instanceSize = matrixOfDistances.length;
+    }
+
+    public ProblemSolution generateInitialSolution(){
+        List<Integer> initialWay = new ArrayList<Integer>(instanceSize);
+        for(int i = 0; i < instanceSize; i++){
+            initialWay.add(i);
+        }
+        Collections.shuffle(initialWay, RandomManager.getRandom());
+
+        return createSolution(initialWay);
     }
 
     public ProblemSolution createSolution(List<Integer> way) {
