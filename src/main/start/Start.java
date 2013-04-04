@@ -58,8 +58,6 @@ public class Start {
             }
         }
 
-
-
         /*
         Generating of random seeds with initial seed 1.
          */
@@ -68,7 +66,27 @@ public class Start {
         for (int i = 0; i < 100; i++) {
             randomSeeds.add(RandomManager.getRandom().nextLong());
         }
-        System.out.println("Seeds used: " + Arrays.toString(randomSeeds.toArray()));
+//        System.out.println("Seeds used: " + Arrays.toString(randomSeeds.toArray()));
+
+        /*
+        Neighbourhood and pivoting rule output
+         */
+        System.out.print("Neighbourhood: ");
+        if (neighbourhood != null) {
+            System.out.println(neighbourhood);
+        } else {
+            System.out.print(algorithm + " (");
+            for (int i = 0; i < neighbourhoodsOrder.size() - 1; i++) {
+                System.out.print(neighbourhoodsOrder.get(i) + "-");
+            }
+            System.out.println(neighbourhoodsOrder.get(neighbourhoodsOrder.size() - 1) + ")");
+        }
+        System.out.print("Pivoting rule: ");
+        if (pivotingRule != null) {
+            System.out.println(pivotingRule);
+        } else {
+            System.out.println(PivotingRule.FIRST_IMPROVEMENT);
+        }
 
         /*
         Main variables initialization.
@@ -129,15 +147,18 @@ public class Start {
             /*
             Statistical output
              */
-            System.out.println("Instance: " + instanceFiles[i]);
-            System.out.println("   Infeasible: " + (double) infeasibleNum / 100);
-            System.out.println("   Mean penalised RPD: " + totalPenalisedRPD / 100);
-            System.out.println("   Mean CPU time: " + totalCPUTime / 100);
-//            System.out.println("      All penalised RPDs: " + Arrays.toString(allPenalisedRPD));
-//            System.out.println("      All cpu-time: " + Arrays.toString(allCpuTime));
+            System.out.println("   Instance: " + instanceFiles[i]);
+            System.out.println("      Infeasible: " + (double) infeasibleNum / 100);
+            System.out.println("      Mean penalised RPD: " + totalPenalisedRPD / 100);
+            System.out.println("      Mean CPU time: " + totalCPUTime / 100);
+//            System.out.println("         All penalised RPDs: " + Arrays.toString(allPenalisedRPD));
+//            System.out.println("         All cpu-time: " + Arrays.toString(allCpuTime));
         }
     }
 
+    /*
+    Error of console command input.
+     */
     public static void errorExit() {
         System.out.println("Console command is wrong!");
         System.exit(1);
