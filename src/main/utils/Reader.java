@@ -13,6 +13,9 @@ import java.util.regex.Pattern;
  */
 public class Reader {
 
+    /*
+    Static reader of TSPTW instance files. Uses the regular expressions for recognizing of separate integers. Returns new TSPTW instance.
+     */
     public static ProblemInstance readProblemInstanceFromFile(String filePath) {
         int[][] matrixOfDistances = null;
         int[] windowOpenTime = null;
@@ -25,7 +28,6 @@ public class Reader {
             Pattern integerRegExp = Pattern.compile("\\d+");
             Matcher integerRegExpMatcher;
 
-            //Read number of nodes
             int numberOfNodes = Integer.parseInt(bufferedReader.readLine());
             matrixOfDistances = new int[numberOfNodes][numberOfNodes];
             windowOpenTime = new int[numberOfNodes];

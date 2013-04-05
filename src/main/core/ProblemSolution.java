@@ -7,6 +7,11 @@ import java.util.Arrays;
  */
 public class ProblemSolution {
 
+    /*
+    Intended for describing of the solution for TSPTW.
+        way - the way of the traveling salesman. Order of nodes visited.
+     */
+
     private int[] way;
 
     private int numberOfPenalties;
@@ -17,10 +22,6 @@ public class ProblemSolution {
 
     public ProblemSolution(int[] way) {
         this.way = way;
-    }
-
-    public int getWayCostWithoutPenalties() {
-        return wayCostWithoutPenalties;
     }
 
     public int getWayCostWithPenalties() {

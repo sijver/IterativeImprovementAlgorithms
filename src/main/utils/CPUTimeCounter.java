@@ -8,6 +8,10 @@ import java.lang.management.ThreadMXBean;
  */
 public class CPUTimeCounter {
 
+    /*
+    The counter of CPU Time. It' possible to set the start time and then get the elapsed time.
+     */
+
     private static ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
     private static long counterStartTime;
 

@@ -11,6 +11,14 @@ import java.util.List;
  */
 public class ProblemInstance {
 
+    /*
+    Intended for describing of TSPTW instance and different methods of II for finding of solutions.
+        matrixOfDistances - distances between all the node pairs.
+        windowOpenTime - vector of windows' open time values.
+        windowCloseTime - vector of windows' close time values.
+        instanceSize - number of nodes.
+     */
+
     private int[][] matrixOfDistances;
     private int[] windowOpenTime;
     private int[] windowCloseTime;
@@ -23,6 +31,9 @@ public class ProblemInstance {
         instanceSize = matrixOfDistances.length;
     }
 
+    /*
+    Generates TSPTW solution using RandomManager.
+     */
     public ProblemSolution generateInitialSolution() {
         List<Integer> initialWay = new ArrayList<Integer>(instanceSize);
         for (int i = 0; i < instanceSize; i++) {
@@ -38,6 +49,9 @@ public class ProblemInstance {
         return createSolution(initialWayArray);
     }
 
+    /*
+    Solution creation (method-factory). Returns the solution with computed way cost.
+     */
     public ProblemSolution createSolution(int[] way) {
         ProblemSolution newSolution = new ProblemSolution(way.clone());
 
@@ -65,6 +79,9 @@ public class ProblemInstance {
         return newSolution;
     }
 
+    /*
+    Implementation of the II for any neighbourhood. One iteration.
+     */
     public ProblemSolution improveSolutionOnce(ProblemSolution initialSolution, Neighbourhood neighbourhood, PivotingRule pivotingRule) {
         ProblemSolution bestSolution = createSolution(initialSolution.getWay());
 
@@ -137,6 +154,9 @@ public class ProblemInstance {
         return bestSolution;
     }
 
+    /*
+    Implementation of the II for any neighbourhood to the optimum.
+     */
     public ProblemSolution improveSolutionToOptimum(ProblemSolution initialSolution, Neighbourhood neighbourhood, PivotingRule pivotingRule) {
         ProblemSolution bestSolution = initialSolution;
         int lastTimeWayCost;
@@ -149,6 +169,9 @@ public class ProblemInstance {
         return bestSolution;
     }
 
+    /*
+    Implementation of the VND algorithm for any neighbourhoods order.
+     */
     public ProblemSolution improveSolutionVND(ProblemSolution initialSolution, List<Neighbourhood> algorithmsExecutionOrder) {
         ProblemSolution bestSolution = initialSolution;
 
@@ -168,6 +191,9 @@ public class ProblemInstance {
         return bestSolution;
     }
 
+    /*
+    Implementation of the Piped VND algorithm for any neighbourhoods order.
+     */
     public ProblemSolution improveSolutionPipedVND(ProblemSolution initialSolution, List<Neighbourhood> algorithmsExecutionOrder) {
         ProblemSolution bestSolution = initialSolution;
 
