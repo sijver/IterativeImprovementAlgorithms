@@ -28,13 +28,6 @@ public class Start {
         if (args.length != 2) {
             errorExit();
         } else {
-            if (args[0].equals("--best")) {
-                pivotingRule = PivotingRule.BEST_IMPROVEMENT;
-            } else if (args[0].equals("--first")) {
-                pivotingRule = PivotingRule.FIRST_IMPROVEMENT;
-            } else {
-                errorExit();
-            }
             if (args[1].equals("--transpose")) {
                 neighbourhood = Neighbourhood.TRANSPOSE;
             } else if (args[1].equals("--insert")) {
@@ -53,6 +46,13 @@ public class Start {
             } else if (args[1].equalsIgnoreCase("--pipedVND-TIE")) {
                 neighbourhoodsOrder = Arrays.asList(Neighbourhood.TRANSPOSE, Neighbourhood.INSERT, Neighbourhood.EXCHANGE);
                 algorithm = "PipedVND";
+            } else {
+                errorExit();
+            }
+            if (args[0].equals("--best")) {
+                pivotingRule = PivotingRule.BEST_IMPROVEMENT;
+            } else if (args[0].equals("--first")) {
+                pivotingRule = PivotingRule.FIRST_IMPROVEMENT;
             } else {
                 errorExit();
             }
@@ -82,7 +82,7 @@ public class Start {
             System.out.println(neighbourhoodsOrder.get(neighbourhoodsOrder.size() - 1) + ")");
         }
         System.out.print("Pivoting rule: ");
-        if (pivotingRule != null) {
+        if (neighbourhood != null) {
             System.out.println(pivotingRule);
         } else {
             System.out.println(PivotingRule.FIRST_IMPROVEMENT);
@@ -148,7 +148,7 @@ public class Start {
             Statistical output
              */
             System.out.println("   Instance: " + instanceFiles[i]);
-            System.out.println("      Infeasible: " + (double) infeasibleNum / 100);
+            System.out.println("      Infeasible: " + infeasibleNum);
             System.out.println("      Mean penalised RPD: " + totalPenalisedRPD / 100);
             System.out.println("      Mean CPU time: " + totalCPUTime / 100);
 //            System.out.println("         All penalised RPDs: " + Arrays.toString(allPenalisedRPD));
