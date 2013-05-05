@@ -4,6 +4,7 @@ import main.utils.RandomManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -202,5 +203,64 @@ public class ProblemInstance {
         }
 
         return bestSolution;
+    }
+
+    /*
+    Get all neighbours of solution using certain neighbourhood.
+     */
+    public List<ProblemSolution> getAllNeighbours(ProblemSolution solution, Neighbourhood neighbourhood){
+        List<ProblemSolution> neighbours = new LinkedList<ProblemSolution>();
+
+        switch (neighbourhood) {
+            case TRANSPOSE:
+                for (int i = 0; i < instanceSize - 1; i++) {
+                    int[] newSolutionWay = solution.getWay().clone();
+                    int var = newSolutionWay[i];
+                    newSolutionWay[i] = newSolutionWay[i + 1];
+                    newSolutionWay[i + 1] = var;
+
+                    ProblemSolution newSolution = createSolution(newSolutionWay);
+                    neighbours.add(newSolution);
+                }
+                break;
+            case EXCHANGE:
+                for (int i = 0; i < instanceSize; i++) {
+                    for (int j = i + 1; j < instanceSize; j++) {
+                        int[] newSolutionWay = solution.getWay().clone();
+                        int var = newSolutionWay[i];
+                        newSolutionWay[i] = newSolutionWay[j];
+                        newSolutionWay[j] = var;
+
+                        ProblemSolution newSolution = createSolution(newSolutionWay);
+                        neighbours.add(newSolution);
+                    }
+                }
+                break;
+            case INSERT:
+                for (int i = 0; i < instanceSize; i++) {
+                    for (int j = 0; j < instanceSize; j++) {
+                        if (i != j && i != j + 1) {
+                            int[] newSolutionWay = solution.getWay().clone();
+                            int var = newSolutionWay[i];
+                            if (i < j) {
+                                for (int k = i; k < j; k++) {
+                                    newSolutionWay[k] = newSolutionWay[k + 1];
+                                }
+                                newSolutionWay[j] = var;
+                            } else {
+                                for (int k = i; k > j + 1; k--) {
+                                    newSolutionWay[k] = newSolutionWay[k - 1];
+                                }
+                                newSolutionWay[j + 1] = var;
+                            }
+
+                            ProblemSolution newSolution = createSolution(newSolutionWay);
+                            neighbours.add(newSolution);
+                        }
+                    }
+                }
+                break;
+        }
+        return neighbours;
     }
 }
