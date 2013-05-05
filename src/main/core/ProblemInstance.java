@@ -263,4 +263,8 @@ public class ProblemInstance {
         }
         return neighbours;
     }
+
+    public int[][] getMatrixOfDistances() {
+        return matrixOfDistances;
+    }
 }
