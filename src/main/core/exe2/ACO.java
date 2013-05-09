@@ -7,7 +7,10 @@ import main.core.ProblemSolution;
 import main.utils.CPUTimeCounter;
 import main.utils.RandomManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,6 +30,9 @@ public class ACO {
 
     private Ant[] ants = new Ant[10];
 
+    private static final int ALPHA = 2;
+    private static final int BETA = 2;
+
     public ACO(ProblemSolution solution, long cpuTimeLimit, ProblemInstance problemInstance, int bestSolutionEvaluation) {
         this.solution = solution;
         this.cpuTimeLimit = cpuTimeLimit;
@@ -38,7 +44,7 @@ public class ACO {
         pheromoneTrails = new double[instanceSize][instanceSize];
         for (int i = 0; i < instanceSize; i++) {
             for (int j = i + 1; j < instanceSize; j++) {
-                pheromoneTrails[i][j] = 0.0001;
+                pheromoneTrails[i][j] = 0.001;
                 pheromoneTrails[j][i] = pheromoneTrails[i][j];
             }
         }
@@ -48,7 +54,7 @@ public class ACO {
         heuristicValues = new double[instanceSize][instanceSize];
         for (int i = 0; i < instanceSize; i++) {
             for (int j = 0; j < instanceSize; j++) {
-                if(matrixOfDistances[i][j] != 0){
+                if (matrixOfDistances[i][j] != 0) {
                     heuristicValues[i][j] = 1.0 / matrixOfDistances[i][j];
                 } else {
                     heuristicValues[i][j] = 10;
@@ -71,7 +77,7 @@ public class ACO {
 
             for (int i = 0; i < pheromoneTrails.length; i++) {
                 for (int j = i + 1; j < pheromoneTrails.length; j++) {
-                    pheromoneTrails[i][j] = pheromoneTrails[i][j] * (1.0 - 0.001);
+                    pheromoneTrails[i][j] = pheromoneTrails[i][j] * (1.0 - 0.0001);
                     pheromoneTrails[j][i] = pheromoneTrails[i][j];
                 }
             }
@@ -80,8 +86,6 @@ public class ACO {
                 if (problemSolutions[i].getWayCostWithPenalties() < solution.getWayCostWithPenalties()) {
                     solution = problemSolutions[i];
 
-                    System.out.println(solution.getWayCostWithPenalties());
-                    System.out.println(Arrays.toString(solution.getWay()));
                     if (solution.getWayCostWithPenalties() <= bestSolutionEvaluation && getBestSolutionFindTime() < 0) {
                         bestSolutionFindTime = CPUTimeCounter.getCounterResult();
                     }
@@ -96,8 +100,6 @@ public class ACO {
                 pheromoneTrails[solutionWay[0]][solutionWay[instanceSize - 1]] = pheromoneTrails[solutionWay[instanceSize - 1]][solutionWay[0]];
             }
         }
-
-
     }
 
     public long getBestSolutionFindTime() {
@@ -111,18 +113,14 @@ public class ACO {
 
     private class Ant {
 
-        private int alpha = 2;
-        private int beta = 2;
-
         public ProblemSolution generateSolution() {
             Set<Integer> notUsedVertices = new HashSet<Integer>();
-            for (int i = 0; i < instanceSize; i++) {
+            for (int i = 1; i < instanceSize; i++) {
                 notUsedVertices.add(i);
             }
 
             List<Integer> solutionWay = new ArrayList<Integer>();
-            solutionWay.add(RandomManager.getRandom().nextInt(instanceSize));
-            notUsedVertices.remove(solutionWay.get(0));
+            solutionWay.add(0);
 
             while (notUsedVertices.size() > 0) {
                 double[] probabilities = new double[notUsedVertices.size()];
@@ -131,7 +129,7 @@ public class ACO {
                 Object[] notUsedVerticesArray = notUsedVertices.toArray();
 
                 for (int i = 0; i < notUsedVertices.size(); i++) {
-                    probabilities[i] = Math.pow(pheromoneTrails[solutionWay.get(solutionWay.size() - 1)][(Integer) notUsedVerticesArray[i]], alpha) * Math.pow(heuristicValues[solutionWay.get(solutionWay.size() - 1)][(Integer) notUsedVerticesArray[i]], beta);
+                    probabilities[i] = Math.pow(pheromoneTrails[solutionWay.get(solutionWay.size() - 1)][(Integer) notUsedVerticesArray[i]], ALPHA) * Math.pow(heuristicValues[solutionWay.get(solutionWay.size() - 1)][(Integer) notUsedVerticesArray[i]], BETA);
 
                     probabilitiesSum += probabilities[i];
                 }
@@ -155,8 +153,7 @@ public class ACO {
                 solutionWayArray[i] = solutionWay.get(i);
             }
 
-            return problemInstance.improveSolutionVND(problemInstance.createSolution(solutionWayArray), Arrays.asList(Neighbourhood.TRANSPOSE, Neighbourhood.INSERT, Neighbourhood.EXCHANGE));
-//            return problemInstance.improveSolutionToOptimum(problemInstance.createSolution(solutionWayArray), Neighbourhood.INSERT, PivotingRule.FIRST_IMPROVEMENT);
+            return problemInstance.improveSolutionToOptimum(problemInstance.createSolution(solutionWayArray), Neighbourhood.INSERT, PivotingRule.FIRST_IMPROVEMENT);
         }
 
     }
