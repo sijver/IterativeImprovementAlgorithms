@@ -37,7 +37,9 @@ public class StartExe2 {
                 "tsptw_instances/n80w200.001.txt", "tsptw_instances/n80w200.002.txt", "tsptw_instances/n80w200.003.txt",
                 "tsptw_instances/n80w200.004.txt", "tsptw_instances/n80w200.005.txt"};
         int[] instanceBest = new int[]{616, 737, 667, 615, 748, 491, 488, 466, 526, 440};
+        /* Max times (in nanoseconds) of VND algorithm on each instance. */
         long[] cpuTimeLimits = new long[]{392917000, 332040000, 445366000, 365437000, 333393000, 426370000, 448095000, 408531000, 375692000, 460746000};
+        /* For last 5 instances percent to add for best solution values. For RTD analysis. */
         int[] percentage = new int[]{30, 35, 50, 30, 45};
 
         long totalCPUTime;
@@ -51,8 +53,6 @@ public class StartExe2 {
         /*
         Running of SA and ACO algorithm 25 times for each instance. Getting of average pRPD and CPU-time.
          */
-
-
         for (int i = 0; i < instanceFiles.length; i++) {
             for (int alg = 0; alg < 2; alg++) {
                 if (alg == 0) {
@@ -112,8 +112,14 @@ public class StartExe2 {
             }
         }
 
-
+        /*
+        Running of SA and ACO algorithm 25 times for last 5 instances. Getting of times of obtaining of best solution + certain percent.
+         */
         for (int i = 5; i < instanceFiles.length; i++) {
+
+            /*
+            Algorithm 0 - SA, 1 - ACO.
+             */
             for (int alg = 0; alg < 2; alg++) {
                 if (alg == 0) {
                     System.out.println("Simulated annealing:");
@@ -123,8 +129,14 @@ public class StartExe2 {
 
                 problemInstance = Reader.readProblemInstanceFromFile(instanceFiles[i]);
 
+                /*
+                List of times when solutions of needed quality were obtained.
+                 */
                 List<Double> bestSolutionFindTimeList = new ArrayList<Double>();
 
+                /*
+                Get solution find time for each seed.
+                 */
                 for (int j = 0; j < randomSeeds.size(); j++) {
                     RandomManager.setRandomSeed(randomSeeds.get(j));
                     problemSolution = problemInstance.generateInitialSolution();
@@ -145,6 +157,9 @@ public class StartExe2 {
                     }
                 }
                 Collections.sort(bestSolutionFindTimeList);
+                /*
+                Output of solution finding times.
+                 */
                 System.out.println("   Instance: " + instanceFiles[i]);
                 System.out.println("      Best solution + " + percentage[i - 5] + "% find times: " + Arrays.toString(bestSolutionFindTimeList.toArray()));
             }
